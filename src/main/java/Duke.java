@@ -42,25 +42,45 @@ public class Duke {
                 }
                 else{
                     System.out.println("___________________________________________");
-                    System.out.println("Got it. I've added this task:");
-                    if (command.startsWith("todo")){
-                        command = command.substring(5);
-                        lists.add(new Todo(command));
-                        System.out.println("  [T][" + lists.get(lists.size()-1).isDone + "] " + lists.get(lists.size()-1).description);
+                    if (!command.startsWith("todo") && !command.startsWith("deadline") && !command.startsWith("event")){
+                        try{
+                            throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
+                        }catch(DukeException e){
+                            e.printStackTrace();
+                        }
                     }
-                    else if (command.startsWith("deadline")){
-                        command = command.substring(9);
-                        String[] deadlineCommand = command.split(" /by ");
-                        lists.add(new Deadline(deadlineCommand[0], deadlineCommand[1]));
-                        System.out.println("  [D][" + lists.get(lists.size()-1).isDone + "] " + lists.get(lists.size()-1).description + " (by: " + deadlineCommand[1] + ")");
+                    else{
+                        if (command.startsWith("todo")){
+                            if (command.length() < 6){
+                                try{
+                                    throw new DukeException("☹ OOPS!!! The description of a todo cannot be empty.");
+                                }catch(DukeException e){
+                                    e.printStackTrace();
+                                }
+                            }
+                            else{
+                                command = command.substring(5);
+                                lists.add(new Todo(command));
+                                System.out.println("Got it. I've added this task:");
+                                System.out.println("  [T][" + lists.get(lists.size()-1).isDone + "] " + lists.get(lists.size()-1).description);
+                            }
+                        }
+                        else if (command.startsWith("deadline")){
+                            command = command.substring(9);
+                            String[] deadlineCommand = command.split(" /by ");
+                            lists.add(new Deadline(deadlineCommand[0], deadlineCommand[1]));
+                            System.out.println("Got it. I've added this task:");
+                            System.out.println("  [D][" + lists.get(lists.size()-1).isDone + "] " + lists.get(lists.size()-1).description + " (by: " + deadlineCommand[1] + ")");
+                        }
+                        else if (command.startsWith("event")){
+                            command = command.substring(6);
+                            String[] eventCommand = command.split(" /at");
+                            lists.add(new Event(eventCommand[0], eventCommand[1]));
+                            System.out.println("Got it. I've added this task:");
+                            System.out.println("  [E][" + lists.get(lists.size()-1).isDone + "] " + lists.get(lists.size()-1).description + " (at: " + eventCommand[1] + ")");
+                        }
+                        System.out.println("Now you have " + lists.size() + " tasks in the list.");
                     }
-                    else if (command.startsWith("event")){
-                        command = command.substring(6);
-                        String[] eventCommand = command.split(" /at");
-                        lists.add(new Event(eventCommand[0], eventCommand[1]));
-                        System.out.println("  [E][" + lists.get(lists.size()-1).isDone + "] " + lists.get(lists.size()-1).description + " (at: " + eventCommand[1] + ")");
-                    }
-                    System.out.println("Now you have " + lists.size() + " tasks in the list.");
                     System.out.println("___________________________________________");
                 }
             }
