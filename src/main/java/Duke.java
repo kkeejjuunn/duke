@@ -98,6 +98,18 @@ public class Duke {
                     System.out.println("  [" + lists.get(index).isDone + "] " + lists.get(index).description);
                     System.out.println("___________________________________________");
                 }
+                else if (command.substring(0, 6).equals("delete")){
+                    String[] specificCommand = command.split(" ");
+                    int index = Integer.parseInt(specificCommand[1]) - 1;
+                    Task t = lists.get(index);
+                    System.out.println("___________________________________________");
+                    System.out.println("Noted! I've removed this task:");
+                    System.out.println(lists.get(index).toString());
+                    lists.remove(index);
+                    System.out.println("Now you have " + lists.size() + " tasks in the lit.");
+                    System.out.println("___________________________________________");
+
+                }
                 else{
                     System.out.println("___________________________________________");
                     if (!command.startsWith("todo") && !command.startsWith("deadline") && !command.startsWith("event")){
@@ -151,7 +163,7 @@ public class Duke {
                                 taskToBeWritten = "E | 0 | " + eventCommand[0] + " | " + eventCommand[1];
                                 data.writeToFile(taskToBeWritten);
                             }
-                            System.out.println("Now you have " + lists.size() + " tasks in the list.");
+                            System.out.println("Now you have " + lists.size() + " tasks in the lit.");
 
                         }catch (IOException | ParseException e) {
                             System.out.println("Error initializing stream");
