@@ -1,5 +1,9 @@
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Scanner;
 
 public class Duke {
@@ -34,6 +38,7 @@ public class Duke {
             for (int i=0; i<aryLines.length;i++){
                 String individualTask = aryLines[i];
                 String[] taskToBeRead = individualTask.split(" \\| ");
+                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HHmm");
                 switch (taskToBeRead[0]){
                     case "T":
                         lists.add(new Todo(taskToBeRead[2]));
@@ -47,7 +52,8 @@ public class Duke {
                         }
                         break;
                     case "D":
-                        lists.add(new Deadline(taskToBeRead[2],taskToBeRead[3]));
+                        Date by = df.parse(taskToBeRead[3]);
+                        lists.add(new Deadline(taskToBeRead[2],by));
                         if (taskToBeRead[1] == "1"){
                             Task t = lists.get(i);
                             t.isDone = true;
@@ -58,7 +64,8 @@ public class Duke {
                         }
                         break;
                     case "E":
-                        lists.add(new Event(taskToBeRead[2],taskToBeRead[3]));
+                        Date at = df.parse(taskToBeRead[3]);
+                        lists.add(new Event(taskToBeRead[2],at));
                         if (taskToBeRead[1] == "1"){
                             Task t = lists.get(i);
                             t.isDone = true;
@@ -70,7 +77,7 @@ public class Duke {
                         break;
                 }
             }
-        }catch (IOException e){
+        }catch (IOException | ParseException e){
             System.out.println(e.getMessage());
         }
 
@@ -125,24 +132,28 @@ public class Duke {
                             else if (command.startsWith("deadline")){
                                 command = command.substring(9);
                                 String[] deadlineCommand = command.split(" /by ");
-                                lists.add(new Deadline(deadlineCommand[0], deadlineCommand[1]));
+                                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HHmm");
+                                Date date = df.parse(deadlineCommand[1]);
+                                lists.add(new Deadline(deadlineCommand[0], date));
                                 System.out.println("Got it. I've added this task:");
-                                System.out.println("  [D][" + lists.get(lists.size()-1).isDone + "] " + lists.get(lists.size()-1).description + " (by: " + deadlineCommand[1] + ")");
+                                System.out.println("  [D][" + lists.get(lists.size()-1).isDone + "] " + lists.get(lists.size()-1).description + " (by: " + date + ")");
                                 taskToBeWritten = "D | 0 | " + deadlineCommand[0] + " | " + deadlineCommand[1];
                                 data.writeToFile(taskToBeWritten);
                             }
                             else if (command.startsWith("event")){
                                 command = command.substring(6);
                                 String[] eventCommand = command.split(" /at");
-                                lists.add(new Event(eventCommand[0], eventCommand[1]));
+                                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HHmm");
+                                Date date = df.parse(eventCommand[1]);
+                                lists.add(new Event(eventCommand[0], date));
                                 System.out.println("Got it. I've added this task:");
-                                System.out.println("  [E][" + lists.get(lists.size()-1).isDone + "] " + lists.get(lists.size()-1).description + " (at: " + eventCommand[1] + ")");
+                                System.out.println("  [E][" + lists.get(lists.size()-1).isDone + "] " + lists.get(lists.size()-1).description + " (at: " + date + ")");
                                 taskToBeWritten = "E | 0 | " + eventCommand[0] + " | " + eventCommand[1];
                                 data.writeToFile(taskToBeWritten);
                             }
                             System.out.println("Now you have " + lists.size() + " tasks in the list.");
 
-                        }catch (IOException e) {
+                        }catch (IOException | ParseException e) {
                             System.out.println("Error initializing stream");
                         }
                     }
