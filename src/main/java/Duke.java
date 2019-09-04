@@ -108,7 +108,23 @@ public class Duke {
                     lists.remove(index);
                     System.out.println("Now you have " + lists.size() + " tasks in the lit.");
                     System.out.println("___________________________________________");
-
+                }
+                else if (command.substring(0, 4).equals("find")){
+                    String[] specificCommand = command.split(" ");
+                    ArrayList<Task> matchingTasks = new ArrayList<Task>();
+                    for(int i=0; i<lists.size();i++){
+                        if(lists.get(i).description.contains(specificCommand[1])){
+                            matchingTasks.add(lists.get(i));
+                        }
+                    }
+                    if(matchingTasks.size() > 0){
+                        System.out.println("___________________________________________");
+                        System.out.println("Here are the matching tasks in your list:");
+                        for(int i = 0; i < matchingTasks.size(); i++) {
+                            System.out.println((i+1) + "." + matchingTasks.get(i).toString());
+                        }
+                        System.out.println("___________________________________________");
+                    }
                 }
                 else{
                     System.out.println("___________________________________________");
