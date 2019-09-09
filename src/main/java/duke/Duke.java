@@ -1,19 +1,21 @@
+package duke;
+
+import duke.command.*;
+import duke.task.Task;
+
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Scanner;
 
 public class Duke {
-    /**
-     *
-     * @param args
-     */
-    public static void main(String[] args) throws IOException {
-        String file_name = "data/duke.txt";
 
+    private Storage storage;
+    private DoneCommand doneCommand;
+    private DeleteCommand deleteCommand;
+    private AddCommand addCommand;
+    private static ArrayList<Task> lists;
+
+    public static void greet(){
         String logo = " ____        _        \n"
                 + "|  _ \\ _   _| | _____ \n"
                 + "| | | | | | | |/ / _ \\\n"
@@ -21,66 +23,65 @@ public class Duke {
                 + "|____/ \\__,_|_|\\_\\___|\n";
         System.out.println("Hello from\n" + logo);
 
-        //ArrayList<String> lists = new ArrayList<String>();
-        ArrayList<Task> lists = new ArrayList<Task>();
-
         System.out.println("___________________________________________");
 
-        System.out.println("Hello! I am Duke\nWhat can I do do for you?");
+        System.out.println("Hello! I am duke.Duke\nWhat can I do do for you?");
 
         System.out.println("___________________________________________");
+    }
 
-        //read file from duke.txt
-        try{
-            ReadFile file = new ReadFile(file_name);
-            String[] aryLines = file.OpenFile();
+    public Duke() {
+        String file_name = "data/duke.txt";
+        storage = new Storage(file_name);
+        lists = storage.loadTasks();
 
-            for (int i=0; i<aryLines.length;i++){
-                String individualTask = aryLines[i];
-                String[] taskToBeRead = individualTask.split(" \\| ");
-                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HHmm");
-                switch (taskToBeRead[0]){
-                    case "T":
-                        lists.add(new Todo(taskToBeRead[2]));
-                        if (taskToBeRead[1] == "1"){
-                            Task t = lists.get(i);
-                            t.isDone = true;
-                            System.out.println("[T][\u2713] " + taskToBeRead[2]);
-                        }
-                        else{
-                            System.out.println("[T][\u2718] " + taskToBeRead[2]);
-                        }
-                        break;
-                    case "D":
-                        Date by = df.parse(taskToBeRead[3]);
-                        lists.add(new Deadline(taskToBeRead[2],by));
-                        if (taskToBeRead[1] == "1"){
-                            Task t = lists.get(i);
-                            t.isDone = true;
-                            System.out.println("[D][\u2713] " + taskToBeRead[2] + " (by: " + taskToBeRead[3] + ")");
-                        }
-                        else{
-                            System.out.println("[D][\u2718] " + taskToBeRead[2] + " (by: " + taskToBeRead[3] + ")");
-                        }
-                        break;
-                    case "E":
-                        Date at = df.parse(taskToBeRead[3]);
-                        lists.add(new Event(taskToBeRead[2],at));
-                        if (taskToBeRead[1] == "1"){
-                            Task t = lists.get(i);
-                            t.isDone = true;
-                            System.out.println("[E][\u2713] " + taskToBeRead[2] + " (at: " + taskToBeRead[3] + ")");
-                        }
-                        else{
-                            System.out.println("[E][\u2718] " + taskToBeRead[2] + " (at: " + taskToBeRead[3] + ")");
-                        }
-                        break;
+        Scanner input = new Scanner(System.in);
+
+        String command = input.nextLine();
+
+        while(!command.equals("bye")) {
+            if(command.equals("list")) {
+                new ListCommand(lists);
+            }
+            else if (command.substring(0, 4).equals("done")) {
+                doneCommand = new DoneCommand(lists, command);
+                lists = doneCommand.UpdatedTasks();
+            }
+            else if (command.substring(0, 6).equals("delete")) {
+                deleteCommand = new DeleteCommand(lists, command);
+                lists = deleteCommand.UpdatedTasks();
+            }
+            else if (command.substring(0, 4).equals("find")) {
+                new FindCommand(lists, command);
+            }
+            else {
+                if (!command.startsWith("todo") && !command.startsWith("deadline") && !command.startsWith("event")){
+                    try{
+                        throw new DukeException("☹ OOPS!!! I'm sorry, but I don't know what that means :-(");
+                    }catch(DukeException e){
+                        e.printStackTrace();
+                    }
+                }
+                else {
+                    addCommand = new AddCommand(lists, command, file_name);
+                    lists = addCommand.updatedTasks();
                 }
             }
-        }catch (IOException | ParseException e){
-            System.out.println(e.getMessage());
+
+            command = input.nextLine();
         }
 
+        System.out.println("___________________________________________");
+        System.out.println("Bye. Hope to see you again soon!");
+        System.out.println("___________________________________________");
+    }
+
+    public static void main(String[] args) throws IOException {
+        greet();
+
+        new Duke();
+
+        /*
         Scanner input = new Scanner(System.in);
 
         String command = input.nextLine();
@@ -190,21 +191,17 @@ public class Duke {
             }
             //input is list
             else{
-                if(lists.size() > 0){
-                    System.out.println("___________________________________________");
-                    System.out.println("Here are the tasks in your list:");
-                    for(int i = 0; i < lists.size(); i++) {
-                        System.out.println((i+1) + "." + lists.get(i).toString());
-                    }
-                    System.out.println("___________________________________________");
-                }
+                showList
             }
             command = input.nextLine();
-        }
+
+
+        }*/
 
         System.out.println("___________________________________________");
         System.out.println("Bye. Hope to see you again soon!");
         System.out.println("___________________________________________");
     }
+
 }
 
