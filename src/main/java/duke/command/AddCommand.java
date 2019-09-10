@@ -30,6 +30,7 @@ public class AddCommand {
         try{
             WriteFile data = new WriteFile(file_name, true);
             String taskToBeWritten;
+            DateFormat df = new SimpleDateFormat("dd/MM/yyyy HHmm");
 
             if (command.startsWith("todo")){
                 if (command.length() < 6){
@@ -51,7 +52,6 @@ public class AddCommand {
             else if (command.startsWith("deadline")){
                 command = command.substring(9);
                 String[] deadlineCommand = command.split(" /by ");
-                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HHmm");
                 Date date = df.parse(deadlineCommand[1]);
                 tasks.add(new Deadline(deadlineCommand[0], date));
                 System.out.println("Got it. I've added this task:");
@@ -62,7 +62,6 @@ public class AddCommand {
             else if (command.startsWith("event")){
                 command = command.substring(6);
                 String[] eventCommand = command.split(" /at");
-                DateFormat df = new SimpleDateFormat("dd/MM/yyyy HHmm");
                 Date date = df.parse(eventCommand[1]);
                 tasks.add(new Event(eventCommand[0], date));
                 System.out.println("Got it. I've added this task:");
