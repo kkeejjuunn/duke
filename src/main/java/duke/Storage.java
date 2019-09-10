@@ -13,13 +13,27 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Storage {
+    /**
+     * The name of the file that stores the tasks
+     */
     private String file_name;
+    /**
+     * The task should be either a todo task, a deadline task or an event task
+     */
     private Task task;
 
+    /**
+     * Creates a new Storage with the given file_name
+     * @param file_name should be the name of the file to store the tasks
+     */
     public Storage(String file_name) {
         this.file_name = file_name;
     }
 
+    /**
+     * Gets the tasks in the given file_name
+     * @return ArrayList of Tasks in the created Storage
+     */
     public ArrayList<Task> loadTasks() {
         ArrayList<Task> lists = new ArrayList<>();
         try{
