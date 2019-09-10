@@ -63,7 +63,8 @@ public class AddCommand {
                 command = command.substring(6);
                 String[] eventCommand = command.split(" /at");
                 Date date = df.parse(eventCommand[1]);
-                tasks.add(new Event(eventCommand[0], date));
+                tasks.add(new Event(eventCommand[0], eventCommand[1]));
+                //tasks.add(new Event(eventCommand[0], date));
                 System.out.println("Got it. I've added this task:");
                 System.out.println("  " + tasks.get(tasks.size()-1).toString());
                 taskToBeWritten = "E | 0 | " + eventCommand[0] + " | " + eventCommand[1];

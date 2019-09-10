@@ -49,8 +49,9 @@ public class Storage {
                         System.out.println(lists.get(i).toString());
                         break;
                     case "E":
-                        Date at = df.parse(taskToBeRead[3]);
-                        lists.add(new Event(taskToBeRead[2],at));
+                        //Date at = df.parse(taskToBeRead[3]);
+                        lists.add(new Event(taskToBeRead[2],taskToBeRead[3]));
+                        //lists.add(new Event(taskToBeRead[2],at));
                         if (taskToBeRead[1] == "1"){
                             Task t = lists.get(i);
                             t.markAsDone();
